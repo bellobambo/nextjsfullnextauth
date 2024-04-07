@@ -8,6 +8,9 @@ import { z } from 'zod'
 import { Controller, Form, SubmitHandler, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod';
 import { passwordStrength } from 'check-password-strength'
+import PasswordStrength from './PasswordStrength'
+import { registerUser } from '@/lib/actions/authActions'
+import { toast } from 'react-toastify'
 
 
 
@@ -43,8 +46,15 @@ const SignUpForm = () => {
     const toggleVisiblePass = () => setIsVisiblePass(prev => !prev)
 
     const saveUser: SubmitHandler<InputType> = async (data) => {
-        console.log({ data })
+        const { accepted, confirmPassword, ...user } = data;
+        try {
+            const result = await registerUser(user);
+            toast.success('The User Registered successful')
+        } catch (error) {
+            toast.error('Something went wrong')
+        }
     }
+
     const [passStrength, setPassStrength] = useState(0);
 
     useEffect(() => {
@@ -59,20 +69,26 @@ const SignUpForm = () => {
             <Input errorMessage={errors.phone?.message} isInvalid={!!errors.phone} {...register("phone")} className='col-span-2' label='Phone' startContent={<PhoneIcon className='w-4' />} />
             <Input errorMessage={errors.password?.message} isInvalid={!!errors.password}  {...register("password")} className='col-span-2' label='Password' type={isVisiblePass ? "text" : "password"} startContent={<KeyIcon className='w-4' />} endContent={isVisiblePass ? <EyeSlashIcon className='w-4 cursor-pointer' onClick={toggleVisiblePass} />
                 : <EyeIcon className='w-4 cursor-pointer' onClick={toggleVisiblePass} />} />
+
+            <PasswordStrength passStrength={passStrength} />
             <Input errorMessage={errors.confirmPassword?.message} isInvalid={!!errors.confirmPassword} className='col-span-2' {...register("confirmPassword")} type={isVisiblePass ? "text" : "password"} label='Confirm Password' startContent={<KeyIcon className='w-4' />} />
 
-            <Controller control={control} name='accepted' render={({ field }) =>
-            (
-                <Checkbox
+            <div className='flex  items-center'>
 
-                    onChange={field.onChange} onBlur={field.onBlur} className='col-span-2'>
+                <Controller control={control} name='accepted' render={({ field }) =>
+                (
+                    <Checkbox
 
-                </Checkbox>
-            )
-            } />
-            {errors.accepted && <p className='text-red-500'>{errors.accepted.message}  </p>}
+                        onChange={field.onChange} onBlur={field.onBlur} className='col-span-2'>
 
-            I Accept The <Link href='/terms'>Terms</Link>
+                    </Checkbox>
+                )
+                } />
+                {errors.accepted && <p className='text-red-500'>{errors.accepted.message}  </p>}
+
+
+                I Accept The <Link className='ml-2' href='/terms'>Terms</Link>
+            </div>
             <div className='flex justify-center col-span-2'>
                 <Button className='w-48' color='primary' type="submit">Submit </Button>
 
