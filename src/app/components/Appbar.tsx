@@ -15,6 +15,7 @@ const Appbar = () => {
                     </Link>
                 </NavbarItem>
             </NavbarContent>
+            
             <NavbarContent justify="end">
         
                 <NavbarItem>
