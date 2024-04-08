@@ -11,7 +11,7 @@ const Appbar = () => {
 
             <NavbarContent className="hidden sm:flex gap-4" justify="center">
                 <NavbarItem>
-                    <Link color="foreground" href="/home">
+                    <Link className='hover:text-sky-500 transition-colors' color="foreground" href="/">
                         Home
                     </Link>
                 </NavbarItem>
